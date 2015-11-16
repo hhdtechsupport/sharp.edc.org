@@ -1,0 +1,19 @@
+<?php
+/**
+ * @file
+ * Site-specific functions.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function sharp_custom_form_alter(&$form, $form_state, $form_id) {
+  global $user;
+//  dpm($form, "sharp_custom_form_alter: $form_id");
+
+  switch ($form_id) {
+    case 'taxonomy_form_term':
+      $form['description']['#access'] = FALSE;
+      break;
+  }
+}
