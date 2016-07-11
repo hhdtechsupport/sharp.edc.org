@@ -361,27 +361,34 @@ function search_api_sorts_search_api_query_alter(SearchApiQueryInterface $query)
  * Helper function to get the default sort field
  */
 function _search_api_sorts_get_default_sort($search_sorts, $keys = NULL) {
-  // If there are no keys set, return the default for no keys if set
+  // By default use relevance, which will be overridden when defaults are set.
+  $default_sort = (object) array(
+    'field' => 'search_api_relevance',
+    'name' => t('Relevance'),
+    'default_order' => 'desc',
+    'active' => TRUE,
+  );
+
+  // If there are no keys set, return the default for no keys if set.
   if (empty($keys)) {
     foreach ($search_sorts as $sort) {
       if ($sort->default_sort_no_terms) {
         $sort->active = TRUE;
-        return $sort;
+        $default_sort = $sort;
+      }
+    }
+  }else{
+    // Return the default if set.
+    foreach ($search_sorts as $sort) {
+      if ($sort->default_sort) {
+        $sort->active = TRUE;
+        $default_sort = $sort;
       }
     }
   }
-  // Return the default if set
-  foreach ($search_sorts as $sort) {
-    if ($sort->default_sort) {
-      $sort->active = TRUE;
-      return $sort;
-    }
-  }
-  // Return relevance if no defaults are set
-  return (object) array(
-    'field' => 'search_api_relevance',
-    'name' => t('Relevence'),
-    'default_order' => 'desc',
-    'active' => TRUE,
-  );
+
+  // Allow altering the default sort.
+  drupal_alter('search_api_sorts_default_sort', $default_sort, $search_sorts, $keys);
+
+  return $default_sort;
 }

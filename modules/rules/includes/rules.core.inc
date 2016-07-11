@@ -1124,7 +1124,8 @@ abstract class RulesPlugin extends RulesExtendable {
         elseif ($this->plugin == 'reaction rule') {
           // Clear event sets cached for evaluation.
           cache_clear_all('event_', 'cache_rules', TRUE);
-          variable_del('rules_event_whitelist');
+          // Clear event whitelist for rebuild.
+          cache_clear_all('rules_event_whitelist', 'cache_rules', TRUE);
         }
         drupal_static_reset('rules_get_cache');
         drupal_static_reset('rules_config_update_dirty_flag');
@@ -2384,7 +2385,12 @@ abstract class RulesContainerPlugin extends RulesPlugin implements IteratorAggre
   public function resetInternalCache() {
     $this->availableVariables = NULL;
     foreach ($this->children as $child) {
-      $child->resetInternalCache();
+      if (method_exists($child, 'resetInternalCache')) {
+        $child->resetInternalCache();
+      }
+      else {
+        watchdog('Missing Method', 'resetInternalCache in @obj', array('@obj' => print_r($child, TRUE)));
+      }
     }
   }
 
@@ -2395,7 +2401,12 @@ abstract class RulesContainerPlugin extends RulesPlugin implements IteratorAggre
     parent::optimize();
     // Now let the children optimize itself.
     foreach ($this as $element) {
-      $element->optimize();
+      if (method_exists($element, 'optimize')) {
+        $element->optimize();
+      }
+      else {
+        watchdog('Missing Method', 'optimize in @obj', array('@obj' => print_r($element, TRUE)));
+      }
     }
   }
 }
