@@ -50,6 +50,27 @@ body {
     box-shadow: 4px 0 15px rgba(0,0,0,1), -4px 0 15px rgba(0,0,0,1);
 }
 
+#footer {
+  background-color: #577786;
+  color: #ffffff;
+  padding: 0;
+}
+
+#footer a {
+  color: #ffffff;
+}
+
+#footer #contact-info {
+  font-size: 85%;
+  font-style: normal;
+  font-weight: normal;
+}
+
+#footer .block {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
 h1#page-title {
     margin-bottom: 30px;
 }
@@ -898,6 +919,7 @@ input[type="submit"]:active,
     padding-top: 15px;
 }
 
+#block-block-15,
 #mission-statement {
     font-size: 15px;
     font-weight: bold;
